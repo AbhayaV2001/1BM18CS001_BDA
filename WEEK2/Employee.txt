@@ -1,0 +1,75 @@
+create keyspace Employee with replication = {'class': 'SimpleStrategy', 'replication_factor':1};
+
+use employee;
+
+create table Employee_Info(emp_id int primary key, emp_name text, Designation text, Date_of_joining timestamp, Salary double, Dept_name text);
+
+begin batch
+            ... insert into Employee_Info(emp_id,emp_name,Designation,Date_of_joining,Salary, Dept_name) values (120, 'Ram', 'Senior Testor', '2010-06-13',30000.0, 'Testing');
+            ... insert into Employee_Info(emp_id,emp_name,Designation,Date_of_joining,Salary, Dept_name) values (121, 'Akshay', 'Senior Designer', '2010-05-25',50000.0, 'Design');
+            ... insert into Employee_Info(emp_id,emp_name,Designation,Date_of_joining,Salary, Dept_name) values (122, 'Dhanraj', 'Technical Expert', '2010-03-27',60000.0, 'Development');
+            ... apply batch;
+
+select * from Employee_Info;
+
+ emp_id | date_of_joining                 | dept_name   | designation      | emp_name | salary
+--------+---------------------------------+-------------+------------------+----------+--------
+   121 | 2010-05-24 18:30:00.000000+0000 |      Design |  Senior Designer |   Akshay |  50000
+   122 | 2010-03-26 18:30:00.000000+0000 | Development | Technical Expert |  Dhanraj |  60000
+   120 | 2010-06-12 18:30:00.000000+0000 |     Testing |    Senior Testor |      Ram |  30000
+
+update Employee_Info set emp_name='Chandan', dept_name='Validation' where emp_id= 120;
+
+cqlsh:employee> select * from Employee_Info;
+
+ emp_id | date_of_joining                 | dept_name   | designation      | emp_name | salary
+--------+---------------------------------+-------------+------------------+----------+--------
+   121 | 2010-05-24 18:30:00.000000+0000 |      Design |  Senior Designer |   Akshay |  50000
+   122 | 2010-03-26 18:30:00.000000+0000 | Development | Technical Expert |  Dhanraj |  60000
+   120 | 2010-06-12 18:30:00.000000+0000 |  Validation |    Senior Testor |  Chandan |  30000
+
+ select * from Employee_Info order by salary asc;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="ORDER BY is only supported when the partition key is restricted by an EQ or an IN."
+
+alter table Employee_Info add Project set<text>;
+
+cqlsh:employee> select * from Employee_Info ;
+
+ emp_id | date_of_joining                 | dept_name   | designation      | emp_name | project | salary
+--------+---------------------------------+-------------+------------------+----------+---------+--------
+   121 | 2010-05-24 18:30:00.000000+0000 |      Design |  Senior Designer |   Akshay |    null |  50000
+   122 | 2010-03-26 18:30:00.000000+0000 | Development | Technical Expert |  Dhanraj |    null |  60000
+   120 | 2010-06-12 18:30:00.000000+0000 |  Validation |    Senior Testor |  Chandan |    null |  30000
+
+update Employee_Info set project={'website','application'} where emp_id=121;
+
+cqlsh:employee> update Employee_Info set project={'networking'} where emp_id=122;
+
+cqlsh:employee> select * from Employee_Info;
+
+ emp_id | date_of_joining                 | dept_name   | designation      | emp_name | project                    | salary
+--------+---------------------------------+-------------+------------------+----------+----------------------------+--------
+   121 | 2010-05-24 18:30:00.000000+0000 |      Design |  Senior Designer |   Akshay | {'application', 'website'} |  50000
+   122 | 2010-03-26 18:30:00.000000+0000 | Development | Technical Expert |  Dhanraj |             {'networking'} |  60000
+   120 | 2010-06-12 18:30:00.000000+0000 |  Validation |    Senior Testor |  Chandan |                       null |  30000
+
+(3 rows)
+cqlsh:employee> insert into Employee_Info (emp_id,date_of_joining,dept_name,designation,emp_name,project,salary) values (128,'2021-02-28','control','head','xyz',{'security'},10000) using TTL 15;
+
+cqlsh:employee> select * from Employee_Info;
+
+ emp_id | date_of_joining                 | dept_name   | designation      | emp_name | project                    | salary
+--------+---------------------------------+-------------+------------------+----------+----------------------------+--------
+   121 | 2010-05-24 18:30:00.000000+0000 |      Design |  Senior Designer |   Akshay | {'application', 'website'} |  50000
+   122 | 2010-03-26 18:30:00.000000+0000 | Development | Technical Expert |  Dhanraj |             {'networking'} |  60000
+   128 | 2021-02-27 18:30:00.000000+0000 |     control |             head |      xyz |               {'security'} |  10000
+   120 | 2010-06-12 18:30:00.000000+0000 |  Validation |    Senior Testor |  Chandan |                       null |  30000
+
+(4 rows)
+cqlsh:employee> select * from Employee_Info;
+
+ emp_id | date_of_joining                 | dept_name   | designation      | emp_name | project                    | salary
+--------+---------------------------------+-------------+------------------+----------+----------------------------+--------
+   121 | 2010-05-24 18:30:00.000000+0000 |      Design |  Senior Designer |   Akshay | {'application', 'website'} |  50000
+   122 | 2010-03-26 18:30:00.000000+0000 | Development | Technical Expert |  Dhanraj |             {'networking'} |  60000
+   120 | 2010-06-12 18:30:00.000000+0000 |  Validation |    Senior Testor |  Chandan |                       null |  30000
