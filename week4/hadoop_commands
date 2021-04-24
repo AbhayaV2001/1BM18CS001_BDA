@@ -1,0 +1,60 @@
+hdoop@codebind:~/hadoop-3.2.1/sbin$ start-all.sh
+WARNING: Attempting to start all Apache Hadoop daemons as hdoop in 10 seconds.
+WARNING: This is not a recommended production deployment configuration.
+WARNING: Use CTRL-C to abort.
+Starting namenodes on [localhost]
+Starting datanodes
+Starting secondary namenodes [codebind]
+Starting resourcemanager
+Starting nodemanagers
+hdoop@codebind:~/hadoop-3.2.1/sbin$ jps
+4432 NodeManager
+4068 SecondaryNameNode
+3829 DataNode
+4792 Jps
+4280 ResourceManager
+3693 NameNode
+hdoop@codebind:~/hadoop-3.2.1/sbin$ cd ..
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -ls /
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -mkdir  /geeks
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -ls /
+Found 1 items
+drwxr-xr-x   - hdoop supergroup          0 2021-04-24 10:48 /geeks
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -touchz  /geeks/test.txt 
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -lsr /geeks
+lsr: DEPRECATED: Please use 'ls -R' instead.
+-rw-r--r--   1 hdoop supergroup          0 2021-04-24 10:50 /geeks/test.txt
+hdoop@codebind:~/hadoop-3.2.1$ echo ‘Random sample text’ > sample.txt
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -put ./sample.txt /geeks
+2021-04-24 10:56:49,099 INFO sasl.SaslDataTransferClient: SASL encryption trust check: localHostTrusted = false, remoteHostTrusted = false
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -lsr /geeks
+lsr: DEPRECATED: Please use 'ls -R' instead.
+-rw-r--r--   1 hdoop supergroup         25 2021-04-24 10:56 /geeks/sample.txt
+-rw-r--r--   1 hdoop supergroup          0 2021-04-24 10:50 /geeks/test.txt
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -cat /geeks/sample.txt
+2021-04-24 10:58:10,166 INFO sasl.SaslDataTransferClient: SASL encryption trust check: localHostTrusted = false, remoteHostTrusted = false
+‘Random sample text’
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -mkdir /dir2
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -cp /geeks /dir2
+2021-04-24 10:59:49,616 INFO sasl.SaslDataTransferClient: SASL encryption trust check: localHostTrusted = false, remoteHostTrusted = false
+2021-04-24 10:59:49,729 INFO sasl.SaslDataTransferClient: SASL encryption trust check: localHostTrusted = false, remoteHostTrusted = false
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -ls /dir2
+Found 1 items
+drwxr-xr-x   - hdoop supergroup          0 2021-04-24 10:59 /dir2/geeks
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -ls /dir2
+Found 1 items
+drwxr-xr-x   - hdoop supergroup          0 2021-04-24 10:59 /dir2/geeks
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -rmr  /dir2
+rmr: DEPRECATED: Please use '-rm -r' instead.
+Deleted /dir2
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -ls /dir2
+ls: `/dir2': No such file or directory
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -du /geeks
+25  25  /geeks/sample.txt
+0   0   /geeks/test.txt
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -dus /geeks
+dus: DEPRECATED: Please use 'du -s' instead.
+25  25  /geeks
+hdoop@codebind:~/hadoop-3.2.1$ bin/hdfs dfs -stat /geeks
+2021-04-24 05:26:49
+
