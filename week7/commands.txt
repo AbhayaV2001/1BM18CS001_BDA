@@ -1,0 +1,19 @@
+sbin/start-all.sh
+
+jps
+
+hdfs dfs -ls /
+
+hdfs dfs -mkdir /input_dir1
+
+hdfs dfs -ls /
+
+hadoop fs -put /home/hdoop/week7/temp.txt /input_dir1
+
+hdfs dfs -cat /input_dir1/input.txt      ##temp.txt files too big
+
+hadoop jar /home/hdoop/week7/avgtemp.jar temp.AverageDriver /input_dir/temp.txt /avgtemp_outputdir
+
+hdfs dfs -ls /avgtemp_outputdir
+
+hdfs dfs -cat /avgtemp_outputdir/part-r-00000
