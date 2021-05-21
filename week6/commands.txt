@@ -1,0 +1,21 @@
+sbin/start-all.sh
+
+jps
+
+hdfs dfs -ls /
+
+hdfs dfs -rm -r /input
+
+hdfs dfs -ls /
+
+hdfs dfs -mkdir /input
+
+hdfs dfs -ls /
+
+hadoop fs -put /home/hdoop/week6/input.txt /input
+
+hdfs dfs -cat /input/input.txt
+
+hadoop jar /home/dhanrz/week6/sort.jar samples.topn.TopN /input/input.txt /output
+
+hdfs dfs -cat /output/*
