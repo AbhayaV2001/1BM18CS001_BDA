@@ -10,9 +10,9 @@ hdfs dfs -ls /
 
 hadoop fs -put /home/hdoop/week7/temp.txt /input_dir1
 
-hdfs dfs -cat /input_dir1/input.txt      ##temp.txt files too big
+hdfs dfs -cat /input_dir1/temp.txt      ##temp.txt files too big
 
-hadoop jar /home/hdoop/week7/avgtemp.jar temp.AverageDriver /input_dir/temp.txt /avgtemp_outputdir
+hadoop jar /home/hdoop/week7/avgtemp.jar temp.AverageDriver /input_dir1/temp.txt /avgtemp_outputdir
 
 hdfs dfs -ls /avgtemp_outputdir
 
